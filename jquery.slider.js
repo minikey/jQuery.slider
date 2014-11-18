@@ -36,7 +36,7 @@
 			show: function(index) {
 				var option = this.data('option'),
 					data = this.data('_data'),
-					cur = option.curindex,
+					cur =  data.curindex === undefined ? option.curindex : data.curindex,
 					det = -index * data.width,
 					p = data.itemparent,
 					dir = option.direction,
@@ -48,7 +48,7 @@
 				this.trigger('beforeAnimate', [cur]);
 
 				p.stop(false, true).animate({left: det + 'px'}, option.animduration, function() {
-					option.curindex = index;
+					data.curindex = index;
 					that.trigger('afterAnimate', [index]);
 				});
 			}
