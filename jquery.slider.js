@@ -25,13 +25,13 @@
 				var option = this.data('option'),
 					data = this.data('_data'),
 					len = data.items.length;
-				show((len - 1 + option.curindex) % len);
+				show((len - 1 + data.curindex) % len);
 			},
 			next: function() {
 				var option = this.data('option'),
 					data = this.data('_data'),
 					len = data.items.length;
-				show((len + 1 + option.curindex) % len);
+				show((len + 1 + data.curindex) % len);
 			},
 			show: function(index) {
 				var option = this.data('option'),
@@ -110,6 +110,7 @@
 		opt = $.extend(true, {}, defaults, opt);
 
 		data.items = $(opt.items);
+		data.curindex = opt.curindex;
 
 		if(data.items.length) {
 			data.width = data.items.eq(0).outerWidth();
