@@ -51,6 +51,18 @@
 					data.curindex = index;
 					that.trigger('afterAnimate', [index]);
 				});
+			},
+			auto: function() {
+				var option = this.data('option'),
+					data = this.data('_data'),
+					animspeed = option.animspeed,
+					animduration = option.animduration,
+					that = this;
+				if(option.automatic === true) {
+					data.timerId = setTimeout(function() {
+						that.data('controller').next().auto();
+					}, animspeed);
+				}
 			}
 		}
 	};
@@ -64,16 +76,38 @@
 			var dom = this.dom,
 				option = dom.data('option');
 			animate[option.animtype].next.call(dom);
+			return this;
 		},
 		prev: function() {
 			var dom = this.dom,
 				option = dom.data('option');
 			animate[option.animtype].prev.call(dom);
+			return this;
 		},
 		show: function(index) {
 			var dom = this.dom,
 				option = dom.data('option');
 			animate[option.animtype].show.call(dom, index);
+			return this;
+		},
+		auto: function() {
+			var dom = this.dom,
+				option = dom.data('option');
+			animate[option.animtype].auto.call(dom);
+			return this;
+		},
+		stop: function() {
+			var data = this.dom.data('_data'),
+				timerId = data.timerId;
+			return timerId ? (clearTimeout(timerId), true): false;		
+		},
+		getItem: function(index) {
+			var data = this.dom.data('_data');
+			return data.items.eq(index);
+		},
+		getCurIndex: function() {
+			var data = this.dom.data('_data');
+			return data.curindex;
 		}
 	};
 
@@ -98,6 +132,7 @@
 	function initAnimation(name) {
 		var anim = animate[name];
 		anim.init && anim.init.call(this);
+		anim.auto && anim.auto.call(this);
 	}
 
 	function init(opt) {
@@ -116,8 +151,9 @@
 			data.width = data.items.eq(0).outerWidth();
 			data.itemparent = data.items.eq(0).closest(opt.itemparent);
 			this.data('controller', new Controller(this))
-			.data('option', opt)
-			.data('_data', data);
+				.data('option', opt)
+				.data('_data', data);
+
 			initAnimation.call(this, opt.animtype);
 		}
 
